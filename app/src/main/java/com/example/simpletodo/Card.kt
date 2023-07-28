@@ -47,13 +47,21 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 
-fun Card(selectedData : MutableState<Int>, openDialog: MutableState<Boolean>, id: Int, date: String, note: String, deleteNote: (Int) -> Unit) {
-//    var openDialog = remember {
-//        mutableStateOf(false)
-//    }
+fun Card(selectedData : MutableState<Int>, openDialog: MutableState<Boolean>, id: Int, date: String, note: String, done: Int, deleteNote: (Int) -> Unit) {
+    var iconLeft = Icons.Default.Create
+    var color = Color.White
+
+    if(done == 0){
+        iconLeft = Icons.Default.Check
+        color = Color.White
+    }else{
+        iconLeft = Icons.Default.Delete
+        color = Color(0xFFA7F7A3)
+    }
 
     Box(
         modifier = Modifier
+            .background(color)
             .fillMaxWidth()
             .defaultMinSize(50.dp)
             .border(2.dp, Color.Black, RoundedCornerShape(6.dp)),
@@ -108,7 +116,7 @@ fun Card(selectedData : MutableState<Int>, openDialog: MutableState<Boolean>, id
                         deleteNote(id)
                     }) {
                     Icon(
-                        Icons.Default.Delete,
+                        iconLeft,
                         contentDescription = "Click to delete todo",
                         tint = Color.Gray
                     )

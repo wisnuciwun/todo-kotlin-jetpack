@@ -33,6 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.simpletodo.ui.theme.SimpleTodoTheme
 import com.example.simpletodo.ui.theme.Typography
+import java.text.SimpleDateFormat
+import java.util.Date
 
 // this will appear ini emulator
 @ExperimentalComposeUiApi
@@ -68,10 +70,17 @@ class MainActivity : ComponentActivity() {
                                     .verticalScroll(rememberScrollState())
                             ){
                                 for (item in items){
-                                    Card(selectedId, openDialog, item.id, item.date, item.content) {
+                                    Card(selectedId, openDialog, item.id, item.date, item.content, item.done) {
                                         itemId ->
-                                        dbOperation.deleteNote(itemId)
-                                        items.removeIf{it.id == itemId}
+                                        if(item.done == 0){
+                                            val noteIndex = items.indexOfFirst { it.id == item.id }
+                                            val newNote = Note(item.id, item.date, item.content, 1)
+                                            dbOperation.updateNote(newNote)
+                                            items.set(noteIndex, newNote)
+                                        }else{
+                                            dbOperation.deleteNote(itemId)
+                                            items.removeIf{it.id == itemId}
+                                        }
                                     }
                                     Spacer(modifier = Modifier
                                         .height(3.dp))

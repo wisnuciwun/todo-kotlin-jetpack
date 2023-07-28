@@ -30,16 +30,21 @@ import java.util.Date
 
 @ExperimentalMaterial3Api
 @Composable
-fun Dialog(databaseOperation: DatabaseOperation, openDialog: MutableState<Boolean>, selectedId: MutableState<Int>, items : MutableList<Note>) {
+fun Dialog(
+    databaseOperation: DatabaseOperation,
+    openDialog: MutableState<Boolean>,
+    selectedId: MutableState<Int>,
+    items: MutableList<Note>
+) {
     var updateNote by remember {
         mutableStateOf(TextFieldValue())
     }
 
     var enableButton = true
 
-    if(updateNote.text == ""){
+    if (updateNote.text == "") {
         enableButton = false
-    }else{
+    } else {
         enableButton = true
     }
 
@@ -55,8 +60,10 @@ fun Dialog(databaseOperation: DatabaseOperation, openDialog: MutableState<Boolea
                 )
             },
             text = {
-                Column(modifier = Modifier
-                    .fillMaxWidth()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
                     TextField(
                         value = updateNote,
                         onValueChange = { updateNote = it },
@@ -64,16 +71,19 @@ fun Dialog(databaseOperation: DatabaseOperation, openDialog: MutableState<Boolea
                     Spacer(Modifier.height(8.dp))
                     Button(
                         modifier = Modifier
-                            .fillMaxWidth()
-                        ,
+                            .fillMaxWidth(),
                         enabled = enableButton,
                         onClick = {
-                            val newNote = Note(selectedId.value, SimpleDateFormat("dd/M/yyyy HH:MM").format(
-                                Date()
-                            ), updateNote.text)
+                            val noteIndex = items.indexOfFirst { it.id == selectedId.value }
+                            val newNote = Note(
+                                selectedId.value, SimpleDateFormat("dd/M/yyyy HH:MM").format(
+                                    Date()
+                                ), updateNote.text, items[noteIndex].done
+                            )
                             databaseOperation.updateNote(newNote)
                             openDialog.value = false
-                            items.set(items.indexOfFirst { it.id == selectedId.value }, newNote)
+                            items.set(noteIndex, newNote)
+                            updateNote = TextFieldValue()
                         }) {
                         Text(
                             textAlign = TextAlign.Center,
@@ -83,11 +93,11 @@ fun Dialog(databaseOperation: DatabaseOperation, openDialog: MutableState<Boolea
                     }
                     Button(
                         modifier = Modifier
-                            .fillMaxWidth()
-                        ,
+                            .fillMaxWidth(),
                         onClick = {
-                        openDialog.value = false
-                    }) {
+                            openDialog.value = false
+                            updateNote = TextFieldValue()
+                        }) {
                         Text(
                             textAlign = TextAlign.Center,
                             fontSize = 20.sp,

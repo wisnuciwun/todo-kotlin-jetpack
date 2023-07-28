@@ -11,10 +11,11 @@ class DatabaseOperation(context: Context) {
         val contentValues = ContentValues().apply {
             put("content", note.content)
             put("date", note.date)
+            put("done", note.done)
         }
 
         val db = databaseHelper.writableDatabase
-        val newRowId = db.insert("items", null, contentValues)
+        db.insert("items", null, contentValues)
         db.close()
     }
 
@@ -26,7 +27,8 @@ class DatabaseOperation(context: Context) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
             val content = cursor.getString(cursor.getColumnIndexOrThrow("content"))
             val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
-            notes.add(Note(id,date,content))
+            val done = cursor.getInt(cursor.getColumnIndexOrThrow("done"))
+            notes.add(Note(id,date,content,done))
         }
         cursor.close()
         db.close()
@@ -43,6 +45,7 @@ class DatabaseOperation(context: Context) {
         val contentValues = ContentValues().apply {
             put("content", newNote.content)
             put("date", newNote.date)
+            put("done", newNote.done)
         }
 
         val db = databaseHelper.writableDatabase

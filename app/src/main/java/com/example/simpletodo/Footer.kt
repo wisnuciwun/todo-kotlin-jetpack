@@ -29,6 +29,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -43,16 +44,25 @@ fun Footer(databaseOperation: DatabaseOperation, items: MutableList<Note>) {
         mutableStateOf(TextFieldValue())
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var textFieldFocusState by remember { mutableStateOf(false) }
+    var enableBtn = false
+
+    if(notes.text != ""){
+        enableBtn = true
+    }else{
+        enableBtn = false
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Gray)
+            .background(Color(0xFFBFBABA))
     ) {
         Row(
             modifier = Modifier
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             TextField(
                 value = notes,
@@ -69,13 +79,22 @@ fun Footer(databaseOperation: DatabaseOperation, items: MutableList<Note>) {
                     .padding(0.dp, 0.dp, 8.dp, 0.dp)
                     .height(52.dp)
                     .weight(1f)
+                    .onFocusChanged {
+                        focusState ->
+                        textFieldFocusState = focusState.isFocused
+
+                        if(!focusState.isFocused){
+                            keyboardController?.hide()
+                        }
+                    }
             )
             Button(
+                enabled = enableBtn,
                 modifier = Modifier
                     .height(52.dp),
                 shape = RoundedCornerShape(6.dp),
                 onClick = {
-                    val newNote = Note(0, SimpleDateFormat("dd/M/yyyy HH:MM").format(Date()), notes.text)
+                    val newNote = Note(0, SimpleDateFormat("dd/M/yyyy HH:MM").format(Date()), notes.text, 0)
                     databaseOperation.insertNewNote(newNote)
                     notes = TextFieldValue()
                     items.add(newNote)

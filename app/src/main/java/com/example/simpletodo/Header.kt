@@ -16,7 +16,7 @@ fun Header() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Gray)
+            .background(Color(0xFFBFBABA))
     ) {
         Column(
             modifier = Modifier

@@ -14,12 +14,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_ID = "id"
         private const val COLUMN_DATE = "date"
         private const val COLUMN_CONTENT = "content"
+        private const val COLUMN_DONE = "done"
 
         private const val CREATE_TABLE_SQL = """
             CREATE TABLE $TABLE_NAME (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COLUMN_DATE TEXT,
-                $COLUMN_CONTENT TEXT
+                $COLUMN_CONTENT TEXT,
+                $COLUMN_DONE INTEGER
             )
         """
     }
