@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -41,6 +42,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SimpleTodoTheme {
+                val selectedId = remember { mutableStateOf<Int>(0) }
+                val openDialog = remember { mutableStateOf(false) }
                 val context = LocalContext.current
                 val dbOperation = DatabaseOperation(context)
                 // give * is a must
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         Header()
+                        Dialog(databaseOperation = dbOperation, openDialog = openDialog, selectedId = selectedId, items)
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight(),
@@ -64,7 +68,7 @@ class MainActivity : ComponentActivity() {
                                     .verticalScroll(rememberScrollState())
                             ){
                                 for (item in items){
-                                    Card(item.id, item.date, item.content) {
+                                    Card(selectedId, openDialog, item.id, item.date, item.content) {
                                         itemId ->
                                         dbOperation.deleteNote(itemId)
                                         items.removeIf{it.id == itemId}

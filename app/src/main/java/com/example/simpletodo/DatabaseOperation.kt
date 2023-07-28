@@ -38,4 +38,15 @@ class DatabaseOperation(context: Context) {
         db.delete("items", "id = ?", arrayOf(id.toString()))
         db.close()
     }
+
+    fun updateNote(newNote: Note){
+        val contentValues = ContentValues().apply {
+            put("content", newNote.content)
+            put("date", newNote.date)
+        }
+
+        val db = databaseHelper.writableDatabase
+        db.update("items", contentValues, "id = ?", arrayOf(newNote.id.toString()))
+        db.close()
+    }
 }

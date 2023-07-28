@@ -75,7 +75,7 @@ fun Footer(databaseOperation: DatabaseOperation, items: MutableList<Note>) {
                     .height(52.dp),
                 shape = RoundedCornerShape(6.dp),
                 onClick = {
-                    val newNote = Note(0, SimpleDateFormat("dd/M/yyyy").format(Date()), notes.text)
+                    val newNote = Note(0, SimpleDateFormat("dd/M/yyyy HH:MM").format(Date()), notes.text)
                     databaseOperation.insertNewNote(newNote)
                     notes = TextFieldValue()
                     items.add(newNote)
@@ -85,7 +85,6 @@ fun Footer(databaseOperation: DatabaseOperation, items: MutableList<Note>) {
                     fontSize = 20.sp,
                     text = "+"
                 )
-
             }
         }
 
